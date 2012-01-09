@@ -2,10 +2,11 @@ var Enemy = OZ.Class().extend(HAF.Actor);
 Enemy.prototype.init = function() {
 	this._speed = 1;
 	this._size = 10;
+	this._distance = Infinity;
 	this._position = [];
-	this._direction = [];
-	
 	this._pxPosition = [];
+	this._direction = null;
+	this._waypoint = null;
 	
 	this._alive = true;
 }
@@ -31,19 +32,53 @@ Enemy.prototype.draw = function(context) {
  * @returns {bool} moved by >= 1 pixel?
  */
 Enemy.prototype._move = function(dt) {
-	var changed = false;
-	for (var i=0;i<this._position.length;i++) {
-		var pos = dt * this._speed * this._direction[i];
-		var px = Math.round(pos);
+	if (this._waypoint) { /* try walking current direction */
 
-		this._position[i] += pos;
-		if (px != this._pxPosition[i])  {
-			changed = true;
-			this._pxPosition[i] = px;
+		/* current distance from waypoint */
+		var distance = this._distance(this._position, this._waypoint);
+		
+		/* try next distance in this direction */
+		var position = [];
+		position[0] = this._position + dt * this._direction[0];
+		position[1] = this._position[1] + dt * this._direction[1];
+		
+		if (this._distance(position, this._waypoint) > distance) { /* too far, reset waypoint */
+			this._waypoint = null; 
+		} else { /* okay, step in that direction */
+			this._position = position;
 		}
 	}
+		
+	if (!this._waypoint) {  /* first time or distance worse: ask for next waypoint */
+		this._waypoint = this._map.getViewpoint(this._position);
+		
+		/* compute direction */
+		var norm = Math.sqrt(this._position, this._waypoint);
+		this._direction[0] = (this._waypoint[0] - this._position[0]) * this._speed / norm;
+		this._direction[1] = (this._waypoint[1] - this._position[1]) * this._speed / norm;
+		
+		/* compute new position */
+		this._position[0] += dt * this._direction[0];
+		this._position[1] += dt * this._direction[1];
+	}
 	
+	
+	var changed = false;
+	for (var i=0;i<2;i++) { /* if pixel position changed, redraw will be necessary */
+		var px = Math.round(this._position[i]);
+		if (px != this._pxPosition) { 
+			this._pxPosition[i] = px;
+			changed = true;
+		}
+	}
+
 	return changed;
+}
+
+Enemy.prototype._distance = function(a, b) {
+	var dx = a[0]-b[0];
+	var dy = a[1]-b[1];
+	return dx*dx+dy*dy;
 }
 
 /**

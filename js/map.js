@@ -7,6 +7,13 @@ Map.prototype.getSize = function() {
 	return this.getSize();
 }
 
+/**
+ * Returns next waypoint for a given position
+ */
+Map.prototype.getWaypoint = function(position) {
+	/* FIXME */
+}
+
 Map.prototype.tick = function(dt) {
 	return false;
 }
