@@ -1,20 +1,21 @@
 var Enemy = OZ.Class().extend(HAF.Actor);
-Enemy.prototype.init = function() {
-	this._speed = 1;
+Enemy.prototype.init = function(position) {
+	this._speed = 100/1000;
 	this._size = 10;
-	this._distance = Infinity;
-	this._position = [];
+	this._position = position;
 	this._pxPosition = [];
-	this._direction = null;
+	this._direction = [];
 	this._waypoint = null;
 	
 	this._alive = true;
+	this._map = Game.game.getMap();
+	this._fences = Game.game.getFences();
 }
 
-Enemy.prototype.tick = function() {
+Enemy.prototype.tick = function(dt) {
 	if (!this._alive) { return false; }
 
-	var moved = this._move();
+	var moved = this._move(dt);
 	var died = this._checkFences();
 	return moved || died;
 }
@@ -32,6 +33,7 @@ Enemy.prototype.draw = function(context) {
  * @returns {bool} moved by >= 1 pixel?
  */
 Enemy.prototype._move = function(dt) {
+
 	if (this._waypoint) { /* try walking current direction */
 
 		/* current distance from waypoint */
@@ -39,7 +41,7 @@ Enemy.prototype._move = function(dt) {
 		
 		/* try next distance in this direction */
 		var position = [];
-		position[0] = this._position + dt * this._direction[0];
+		position[0] = this._position[0] + dt * this._direction[0];
 		position[1] = this._position[1] + dt * this._direction[1];
 		
 		if (this._distance(position, this._waypoint) > distance) { /* too far, reset waypoint */
@@ -50,10 +52,10 @@ Enemy.prototype._move = function(dt) {
 	}
 		
 	if (!this._waypoint) {  /* first time or distance worse: ask for next waypoint */
-		this._waypoint = this._map.getViewpoint(this._position);
+		this._waypoint = this._map.getWaypoint(this._position);
 		
 		/* compute direction */
-		var norm = Math.sqrt(this._position, this._waypoint);
+		var norm = Math.sqrt(this._distance(this._position, this._waypoint));
 		this._direction[0] = (this._waypoint[0] - this._position[0]) * this._speed / norm;
 		this._direction[1] = (this._waypoint[1] - this._position[1]) * this._speed / norm;
 		
@@ -87,7 +89,7 @@ Enemy.prototype._distance = function(a, b) {
 Enemy.prototype._checkFences = function() {
 	for (var i=0;i<this._fences.length;i++) {
 		var fence = this._fences[i];
-		if (fence.distanceTo(this._position) < this._size) {
+		if (fence.distanceTo(this._position) < this._size/2) {
 			this._alive = false;
 			return true;
 		}

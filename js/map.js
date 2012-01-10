@@ -4,7 +4,7 @@ Map.prototype.init = function() {
 }
 
 Map.prototype.getSize = function() {
-	return this.getSize();
+	return this._size;
 }
 
 /**
@@ -12,6 +12,7 @@ Map.prototype.getSize = function() {
  */
 Map.prototype.getWaypoint = function(position) {
 	/* FIXME */
+	return this._size;
 }
 
 Map.prototype.tick = function(dt) {
