@@ -1,6 +1,6 @@
 var Map = OZ.Class().extend(HAF.Actor);
 Map.prototype.init = function() {
-	this._size = [600, 600];
+	this._size = [1024, 690];
 }
 
 Map.prototype.getSize = function() {

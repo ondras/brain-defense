@@ -27,7 +27,7 @@ Game.prototype.init = function() {
 	
 	/* debug */
 	var monitor = new HAF.Monitor(this._engine, [200, 100]);
-	document.body.appendChild(monitor.getContainer());
+	//document.body.appendChild(monitor.getContainer());
 	/* */
 
 	var container = this._engine.getContainer();
@@ -48,6 +48,7 @@ Game.prototype.getFences = function() {
 }
 
 Game.prototype._down = function(e) {
+	OZ.Event.prevent(e);
 	if (this._fences.length == this._conf.maxFences) { return; } /* already at max */
 	if (this._downPoint) { return; } /* first point already created */
 	
@@ -63,6 +64,7 @@ Game.prototype._down = function(e) {
 }
 
 Game.prototype._move = function(e) {
+	OZ.Event.prevent(e);
 	var obj = (e.touches ? e.touches[0] : e);
 	var point = this._getPoint(obj);
 	
@@ -76,6 +78,7 @@ Game.prototype._move = function(e) {
 }
 
 Game.prototype._up = function(e) {
+	OZ.Event.prevent(e);
 	if (e.touches && e.touches.length > 0) { return; } /* there are touches remaining */
 
 	while (this._events.length) { OZ.Event.remove(this._events.pop()); }
