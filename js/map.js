@@ -11,8 +11,7 @@ Map.prototype.getSize = function() {
  * Returns next waypoint for a given position
  */
 Map.prototype.getWaypoint = function(position) {
-	/* FIXME */
-	return this._size;
+	return [Math.round(this._size[0]/2), Math.round(this._size[1]/2)];
 }
 
 Map.prototype.tick = function(dt) {
@@ -21,4 +20,17 @@ Map.prototype.tick = function(dt) {
 
 Map.prototype.draw = function(context) {
 	/* FIXME */
+}
+
+Map.prototype.getSpawnPoint = function() {
+	var rx = Math.round(Math.random()*this._size[0]);
+	var ry = Math.round(Math.random()*this._size[1]);
+	
+	if (Math.random() > 0.5) { 
+		ry = (Math.random() > 0.5 ? 0 : this._size[1]);
+	} else {
+		rx = (Math.random() > 0.5 ? 0 : this._size[0]);
+	}
+	
+	return [rx, ry];
 }

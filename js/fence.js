@@ -2,17 +2,21 @@ var Fence = OZ.Class().extend(HAF.Actor);
 Fence.prototype.init = function(pos1, pos2) {
 	this._pos1 = pos1;
 	this._pos2 = pos2;
-	this._dir = [pos2[0]-pos1[0], pos2[1]-pos1[1]];
-	this._normal = [this._dir[1], -this._dir[0]];
+	this._dir = null;
+	this._normal = null;
+	this._dirty = false;
 	
-	/* normalize normal */
-	var norm = Math.sqrt(this._normal[0]*this._normal[0] + this._normal[1]*this._normal[1]);
-	this._normal[0] /= norm;
-	this._normal[1] /= norm;
+	this._compute();
+}
+
+Fence.prototype.setPos2 = function(pos2) {
+	this._pos2 = pos2;
+	this._compute();
+	this._dirty = true;
 }
 
 Fence.prototype.tick = function(dt) {
-	return false;
+	return this._dirty;
 }
 
 Fence.prototype.draw = function(context) {
@@ -34,4 +38,14 @@ Fence.prototype.distanceTo = function(position) {
 	numerator = (this._pos1[1]*this._dir[0] - position[1]*this._dir[0] - this._pos1[0]*this._dir[1] + position[0]*this._dir[1]);
 	var k2 = numerator/denominator;
 	return Math.abs(k2);
+}
+
+Fence.prototype._compute = function() {
+	this._dir = [this._pos2[0]-this._pos1[0], this._pos2[1]-this._pos1[1]];
+	this._normal = [this._dir[1], -this._dir[0]];
+	
+	/* normalize normal */
+	var norm = Math.sqrt(this._normal[0]*this._normal[0] + this._normal[1]*this._normal[1]);
+	this._normal[0] /= norm;
+	this._normal[1] /= norm;
 }
