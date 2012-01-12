@@ -20,7 +20,7 @@ Game.prototype.init = function() {
 	this._engine.addActor(this._map, "map");
 	
 	for (var i=0;i<10;i++) {
-		var enemy = new Enemy(this._map.getSpawnPoint());
+		var enemy = new Enemy.Zombie(this._map.getSpawnPoint());
 		this._enemies.push(enemy);
 		this._engine.addActor(enemy, "enemies");
 	}

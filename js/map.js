@@ -23,6 +23,7 @@ Map.prototype.draw = function(context) {
 }
 
 Map.prototype.getSpawnPoint = function() {
+//	return [0, this._size[1]];
 	var rx = Math.round(Math.random()*this._size[0]);
 	var ry = Math.round(Math.random()*this._size[1]);
 	
