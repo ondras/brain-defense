@@ -5,6 +5,7 @@ Fence.prototype.init = function(pos1, pos2) {
 	this._dir = null;
 	this._normal = null;
 	this._dirty = false;
+	this._hp = 1; /* FIXME configurable? */
 	
 	this._compute();
 }
@@ -38,6 +39,11 @@ Fence.prototype.distanceTo = function(position) {
 	numerator = (this._pos1[1]*this._dir[0] - position[1]*this._dir[0] - this._pos1[0]*this._dir[1] + position[0]*this._dir[1]);
 	var k2 = numerator/denominator;
 	return Math.abs(k2);
+}
+
+Fence.prototype.damage = function(/* FIXME parametrized? */) {
+	this._hp--;
+	if (!this._hp) { Game.game.removeFence(this); }
 }
 
 Fence.prototype._compute = function() {

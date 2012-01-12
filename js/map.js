@@ -1,6 +1,7 @@
 var Map = OZ.Class().extend(HAF.Actor);
 Map.prototype.init = function() {
 	this._size = [1024, 690];
+	this._center = [Math.round(this._size[0]/2), Math.round(this._size[1]/2)];
 }
 
 Map.prototype.getSize = function() {
@@ -11,7 +12,11 @@ Map.prototype.getSize = function() {
  * Returns next waypoint for a given position
  */
 Map.prototype.getWaypoint = function(position) {
-	return [Math.round(this._size[0]/2), Math.round(this._size[1]/2)];
+	var dx = position[0] - this._center[0];
+	var dy = position[1] - this._center[1];
+	var dist = Math.sqrt(dx*dx + dy*dy);
+	if (dist < 20) { return null; }
+	return this._center;
 }
 
 Map.prototype.tick = function(dt) {

@@ -3,7 +3,8 @@ Game.prototype.init = function() {
 	this.constructor.game = this;
 	
 	this._conf = {
-		maxFences: 5
+		maxFences: 5,
+		spawn: 500
 	}
 	
 	this._enemies = [];
@@ -19,15 +20,9 @@ Game.prototype.init = function() {
 	this._engine.addCanvas("fences");
 	this._engine.addActor(this._map, "map");
 	
-	for (var i=0;i<10;i++) {
-		var enemy = new Enemy.Zombie(this._map.getSpawnPoint());
-		this._enemies.push(enemy);
-		this._engine.addActor(enemy, "enemies");
-	}
-	
 	/* debug */
 	var monitor = new HAF.Monitor(this._engine, [200, 100]);
-	//document.body.appendChild(monitor.getContainer());
+	document.body.appendChild(monitor.getContainer());
 	/* */
 
 	var container = this._engine.getContainer();
@@ -36,7 +31,12 @@ Game.prototype.init = function() {
 	OZ.Event.add(container, "mousedown", this._down.bind(this));
 	OZ.Event.add(container, "touchstart", this._down.bind(this));
 
-	this._engine.start();
+	this._start();
+}
+
+Game.prototype.gameOver = function() {
+	this._stop();
+	alert("GAME OVER");
 }
 
 Game.prototype.getMap = function() {
@@ -45,6 +45,28 @@ Game.prototype.getMap = function() {
 
 Game.prototype.getFences = function() {
 	return this._fences;
+}
+
+Game.prototype.removeEnemy = function(enemy) {
+	var index = this._enemies.indexOf(enemy);
+	this._enemies.splice(index, 1);
+	this._engine.removeActor(enemy, "enemies");
+}
+
+Game.prototype.removeFence = function(fence) {
+	var index = this._fences.indexOf(fence);
+	this._fences.splice(index, 1);
+	this._engine.removeActor(fence, "fences");
+}
+
+Game.prototype._start = function() {
+	this._engine.start();
+	this._spawnInterval = setInterval(this._spawn.bind(this), this._conf.spawn);
+}
+
+Game.prototype._stop = function() {
+	clearInterval(this._spawnInterval);
+	this._engine.stop();
 }
 
 Game.prototype._down = function(e) {
@@ -94,4 +116,10 @@ Game.prototype._getPoint = function(e) {
 	var scroll = OZ.DOM.scroll();
 	var pos = OZ.DOM.pos(this._engine.getContainer());
 	return [e.clientX-pos[0], e.clientY-pos[1]];
+}
+
+Game.prototype._spawn = function() {
+	var enemy = new Enemy.Zombie(this._map.getSpawnPoint());
+	this._enemies.push(enemy);
+	this._engine.addActor(enemy, "enemies");
 }

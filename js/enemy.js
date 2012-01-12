@@ -14,9 +14,14 @@ Enemy.prototype.init = function(position, visual) {
 	this._direction = null;
 	this._waypoint = null;
 	this._alive = true;
+	this._deathTime = null;
 
 	this._map = Game.game.getMap();
 	this._fences = Game.game.getFences();
+}
+
+Enemy.prototype.isAlive = function() {
+	return this._alive;
 }
 
 Enemy.prototype.tick = function(dt) {
@@ -26,6 +31,11 @@ Enemy.prototype.tick = function(dt) {
 		this._checkFences();
 		return spriteChanged || moved || !this._alive;
 	} else { /* dead: just animate */
+		var time = Date.now();
+		if (time - this._deathTime > 1000*10) { /* FIXME configurable? automatic? */
+			Game.game.removeEnemy(this);
+			return false;
+		}
 		return this._tickSprite(dt);
 	}
 }
@@ -56,7 +66,11 @@ Enemy.prototype._move = function(dt) {
 	}
 		
 	if (!this._waypoint) {  /* first time or distance worse: ask for next waypoint */
-		this._waypoint = this._map.getWaypoint(this._precisePosition);
+		this._waypoint = this._map.getWaypoint(this._position);
+		if (!this._waypoint) { /* already there! */
+			Game.game.gameOver();
+			return false; 
+		} 
 		
 		/* compute direction */
 		var norm = Math.sqrt(this._distance(this._position, this._waypoint));
@@ -97,6 +111,7 @@ Enemy.prototype._checkFences = function() {
 	for (var i=0;i<this._fences.length;i++) {
 		var fence = this._fences[i];
 		if (fence.distanceTo(this._position) < this._sprite.size[0]/3) {
+			fence.damage();
 			return this._die();
 		}
 	}
@@ -104,5 +119,6 @@ Enemy.prototype._checkFences = function() {
 
 Enemy.prototype._die = function() {
 	this._alive = false;
+	this._deathTime = Date.now();
 }
 
