@@ -22,8 +22,12 @@ Game.prototype.init = function() {
 	
 	/* debug */
 	var monitor = new HAF.Monitor(this._engine, [200, 100]);
-	document.body.appendChild(monitor.getContainer());
+//	document.body.appendChild(monitor.getContainer());
 	/* */
+	
+	this._button = OZ.DOM.elm("input", {type:"button", position:"absolute", value:"Again"});
+	OZ.Event.add(this._button, "click", function() { location.reload(); } );
+	OZ.Event.add(this._button, "touchstart", function() { location.reload(); } );
 
 	var container = this._engine.getContainer();
 	document.body.appendChild(container);
@@ -36,7 +40,12 @@ Game.prototype.init = function() {
 
 Game.prototype.gameOver = function() {
 	this._stop();
-	alert("GAME OVER");
+	var modal = OZ.DOM.elm("div", {width:"100%", height:"100%", backgroundColor:"black", opacity:0.7});
+	this._engine.getContainer().appendChild(modal);
+	
+	var label = new Label("GAME OVER");
+	OZ.Event.add(label, "done", this._gameOverDone.bind(this));
+	label.show(this._engine.getContainer());
 }
 
 Game.prototype.getMap = function() {
@@ -57,6 +66,14 @@ Game.prototype.removeFence = function(fence) {
 	var index = this._fences.indexOf(fence);
 	this._fences.splice(index, 1);
 	this._engine.removeActor(fence, "fences");
+}
+
+Game.prototype._gameOverDone = function() {
+	this._engine.getContainer().appendChild(this._button);
+	var left = this._engine.getContainer().offsetWidth - this._button.offsetWidth;
+	var top = this._engine.getContainer().offsetHeight - this._button.offsetHeight;
+	this._button.style.left = Math.round(left/2) + "px";
+	this._button.style.top = Math.round(top/2) + "px";
 }
 
 Game.prototype._start = function() {

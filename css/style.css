@@ -1,3 +1,22 @@
-body { margin:0px; }
+@font-face {
+	font-family: zombie;
+	src: url(zombie.ttf);
+}
 
-#haf {background-color:yellow}
+body { 
+	margin:0px; 
+}
+
+#haf {
+	background-color:yellow;
+	overflow: hidden;
+}
+
+#haf span {
+	font-family: zombie;
+	text-shadow: 0px 0px 4px red;
+}
+
+#haf input {
+	font-size: 300%;
+}
