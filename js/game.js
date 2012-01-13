@@ -91,7 +91,7 @@ Game.prototype._move = function(e) {
 	var point = this._getPoint(obj);
 	
 	if (this._tmpFence) {
-		this._tmpFence.setPos2(point);
+		this._tmpFence.setPosition(this._downPoint, point);
 	} else {
 		this._tmpFence = new Fence(this._downPoint, point);
 		this._engine.addActor(this._tmpFence, "fences");

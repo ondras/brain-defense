@@ -87,7 +87,7 @@ Enemy.prototype._move = function(dt) {
 	}
 	
 	var changed = false;
-		for (var i=0;i<2;i++) { /* if pixel position changed, redraw will be necessary */
+	for (var i=0;i<2;i++) { /* if pixel position changed, redraw will be necessary */
 		var px = Math.round(this._position[i]);
 		if (px != this._sprite.position[i]) { 
 			this._sprite.position[i] = px;

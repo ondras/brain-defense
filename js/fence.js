@@ -1,30 +1,76 @@
 var Fence = OZ.Class().extend(HAF.Actor);
 Fence.prototype.init = function(pos1, pos2) {
-	this._pos1 = pos1;
-	this._pos2 = pos2;
+	this._pos1 = null;
+	this._pos2 = null;
 	this._dir = null;
 	this._normal = null;
 	this._dirty = false;
-	this._hp = 1; /* FIXME configurable? */
+	this._hp = 3; /* FIXME configurable? */
 	
+	this._colors = [
+		null,
+		"255,0,0",
+		"0,255,0",
+		"0,0,255"
+	]
+	
+	this._lines = [
+		{width: 18, opacity:0.1},
+		{width: 14, opacity:0.2},
+		{width: 10, opacity:0.3},
+		{width: 6, opacity:1},
+		{width: 2, color: "rgb(255,255,255)"}
+	];
+	
+	this.setPosition(pos1, pos2);
 	this._compute();
+	
+	this._particles = [];
 }
 
-Fence.prototype.setPos2 = function(pos2) {
+Fence.prototype.setPosition = function(pos1, pos2) {
+	this._pos1 = pos1;
 	this._pos2 = pos2;
 	this._compute();
 	this._dirty = true;
 }
 
+Fence.prototype.getPosition = function() {
+	return [this._pos1, this._pos2];
+}
+
+Fence.prototype.getColor = function() {
+	return this._colors[this._hp];
+}
+
 Fence.prototype.tick = function(dt) {
-	return this._dirty;
+	for (var i=0;i<this._particles.length;i++) { /* tick all particles */
+		this._dirty = (this._particles[i].tick(dt) || this._dirty);
+	}
+	
+	if (Math.random() > 0.97) {  /* create new particle */
+		this._particles.push(new Fence.Particle(this)); 
+		this._dirty = true;
+	}
+	
+	return this._dirty; /* either we were repositioned, or one of our particles moved, or a new particle was created */
 }
 
 Fence.prototype.draw = function(context) {
-	context.beginPath();
-	context.moveTo(this._pos1[0], this._pos1[1]);
-	context.lineTo(this._pos2[0], this._pos2[1]);
-	context.stroke();
+	context.save();
+	context.lineCap = "round";
+	for (var i=0;i<this._lines.length;i++) {
+		var line = this._lines[i];
+		context.beginPath();
+		context.moveTo(this._pos1[0], this._pos1[1]);
+		context.lineTo(this._pos2[0], this._pos2[1]);
+		context.lineWidth = line.width;
+		context.strokeStyle = (line.color || "rgba("+this._colors[this._hp]+","+line.opacity+")");
+		context.stroke();
+	}
+	context.restore();
+	
+	for (var i=0;i<this._particles.length;i++) { this._particles[i].draw(context); }
 }
 
 Fence.prototype.distanceTo = function(position) {
@@ -44,6 +90,12 @@ Fence.prototype.distanceTo = function(position) {
 Fence.prototype.damage = function(/* FIXME parametrized? */) {
 	this._hp--;
 	if (!this._hp) { Game.game.removeFence(this); }
+}
+
+Fence.prototype.removeParticle = function(particle) {
+	var index = this._particles.indexOf(particle);
+	this._particles.splice(index, 1);
+	this._dirty = true;
 }
 
 Fence.prototype._compute = function() {
