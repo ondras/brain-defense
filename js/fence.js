@@ -5,14 +5,18 @@ Fence.prototype.init = function(pos1, pos2) {
 	this._dir = null;
 	this._normal = null;
 	this._dirty = false;
-	this._hp = 3; /* FIXME configurable? */
+	this._maxHP = 4;  /* FIXME configurable? */
+	this._hp = this._maxHP;
 	
-	this._colors = [
-		null,
-		"255,0,0",
-		"0,255,0",
-		"0,0,255"
-	]
+	var colors = [
+		[255, 0, 0],
+		[0, 255, 0],
+		[0, 0, 255],
+		[0, 255, 255],
+		[255, 0, 255],
+		[255, 255, 0]
+	];
+	this._color = colors[Math.floor(Math.random()*colors.length)];
 	
 	this._lines = [
 		{width: 18, opacity:0.1},
@@ -40,7 +44,10 @@ Fence.prototype.getPosition = function() {
 }
 
 Fence.prototype.getColor = function() {
-	return this._colors[this._hp];
+	var color = [];
+	var frac = this._hp/this._maxHP;
+	for (var i=0;i<this._color.length;i++) { color.push(Math.round(this._color[i]*frac)); }
+	return color.join(",");
 }
 
 Fence.prototype.tick = function(dt) {
@@ -48,7 +55,7 @@ Fence.prototype.tick = function(dt) {
 		this._dirty = (this._particles[i].tick(dt) || this._dirty);
 	}
 	
-	if (Math.random() > 0.97) {  /* create new particle */
+	if (Math.random() > 0.96) {  /* create new particle */
 		this._particles.push(new Fence.Particle(this)); 
 		this._dirty = true;
 	}
@@ -65,7 +72,7 @@ Fence.prototype.draw = function(context) {
 		context.moveTo(this._pos1[0], this._pos1[1]);
 		context.lineTo(this._pos2[0], this._pos2[1]);
 		context.lineWidth = line.width;
-		context.strokeStyle = (line.color || "rgba("+this._colors[this._hp]+","+line.opacity+")");
+		context.strokeStyle = (line.color || "rgba("+this.getColor()+","+line.opacity+")");
 		context.stroke();
 	}
 	context.restore();

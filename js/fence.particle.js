@@ -6,12 +6,27 @@ Fence.Particle.prototype.init = function(fence) {
 	this._opacity = 1;
 	this._size = 3;
 
-	this._velocity = [100*(Math.random()-0.5), 100*(Math.random()-0.5)];
-
 	var position = fence.getPosition();
 	var dir = [position[1][0]-position[0][0], position[1][1]-position[0][1]];
 	var k = Math.random();
 	this._position = [position[0][0] + k*dir[0], position[0][1] + k*dir[1]];
+	
+	var velocity = [-dir[1], dir[0]]; /* normal direction */
+
+	var norm = Math.sqrt(velocity[0]*velocity[0] + velocity[1]*velocity[1]); /* normalized to 1 */
+	var tmp = (Math.random() > 0.5 ? 1 : -1) /* random side */
+	velocity[0] *= tmp/norm;
+	velocity[1] *= tmp/norm;
+	
+	velocity[0] += 0.5*(Math.random()-0.5); /* slight angle randomization */
+	velocity[1] += 0.5*(Math.random()-0.5);
+	
+	var speed = 20 + 40*Math.random(); /* random speed */
+	velocity[0] *= speed;
+	velocity[1] *= speed;
+	
+	this._velocity = velocity;
+	
 }
 
 Fence.Particle.prototype.tick = function(dt) {

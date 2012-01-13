@@ -4,7 +4,7 @@ Game.prototype.init = function() {
 	
 	this._conf = {
 		maxFences: 5,
-		spawn: 500
+		spawn: 700
 	}
 	
 	this._enemies = [];

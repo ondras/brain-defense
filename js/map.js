@@ -24,7 +24,16 @@ Map.prototype.tick = function(dt) {
 }
 
 Map.prototype.draw = function(context) {
-	/* FIXME */
+	context.fillStyle = "#ccc";
+	context.fillRect(0, 0, this._size[0], this._size[1]);
+	
+	var size = 10;
+	context.beginPath();
+	context.moveTo(this._center[0]-size, this._center[1]);
+	context.lineTo(this._center[0]+size, this._center[1]);
+	context.moveTo(this._center[0], this._center[1]-size);
+	context.lineTo(this._center[0], this._center[1]+size);
+	context.stroke();
 }
 
 Map.prototype.getSpawnPoint = function() {

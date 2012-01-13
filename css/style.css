@@ -8,7 +8,6 @@ body {
 }
 
 #haf {
-	background-color:yellow;
 	overflow: hidden;
 }
 
@@ -19,4 +18,5 @@ body {
 
 #haf input {
 	font-size: 300%;
+	cursor: pointer;
 }
