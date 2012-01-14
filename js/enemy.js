@@ -5,7 +5,7 @@ Enemy.zombie = OZ.DOM.elm("img", {src:"img/zombie.png"});
 Enemy.prototype.init = function(position, visual) {
 	HAF.AnimatedSprite.prototype.init.call(this, visual.image, visual.size, visual.frames);
 
-	this._speed = 10 + Math.random()*40*0; /* pixels per second */
+	this._speed = 10 + Math.random()*40; /* pixels per second */
 	this._animation.fps = this._speed / 8;
 	this._size = Math.sqrt(visual.size[0]*visual.size[0]+visual.size[1]*visual.size[1]);
 
