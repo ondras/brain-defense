@@ -36,6 +36,8 @@ Game.prototype.init = function() {
 	OZ.Event.add(container, "touchstart", this._down.bind(this));
 
 	this._start();
+	
+//	new Hint("AAA", "BBB").show(this._engine.getContainer(), [100, 100]);
 }
 
 Game.prototype.gameOver = function() {

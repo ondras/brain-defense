@@ -11,12 +11,30 @@ body {
 	overflow: hidden;
 }
 
+#haf .hint {
+	padding: 0.5em;
+	cursor: pointer;
+	text-align: center;
+	background-color: rgba(255, 255, 255, 0.5);
+	border-radius: 50%;
+	border: 3px solid black;
+}
+
+#haf .hint h2 {
+	margin: 0px;
+}
+
+#haf .hint:hover {
+	opacity: 0.5;
+}
+
 #haf span {
 	font-family: zombie;
-	text-shadow: 0px 0px 4px red;
+	text-shadow: 0px 0px 0.25em red;
 }
 
 #haf input {
 	font-size: 300%;
+	padding: 0.3em 0.6em;
 	cursor: pointer;
 }
