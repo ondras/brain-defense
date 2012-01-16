@@ -7,12 +7,19 @@ Game.prototype.init = function() {
 		spawn: 700
 	}
 	
+	this._dom = {
+		container: OZ.DOM.elm("div", {id:"game", position:"relative", margin:"auto"}),
+		button: OZ.DOM.elm("input", {type:"button", position:"absolute", value:"Again"}),
+		shade: OZ.DOM.elm("div", {id:"shade", position:"absolute", left:"0px", top:"0px", width:"100%", height:"100%"})
+	}
+	
 	this._enemies = [];
 	this._fences = [];
 	this._downPoint = null;
 	this._tmpFence = null;
 	this._events = [];
 	this._map = new Map();
+	this._score = 0;
 	
 	this._engine = new HAF.Engine(this._map.getSize());
 	this._engine.addCanvas("map");
@@ -62,6 +69,9 @@ Game.prototype.removeEnemy = function(enemy) {
 	var index = this._enemies.indexOf(enemy);
 	this._enemies.splice(index, 1);
 	this._engine.removeActor(enemy, "enemies");
+
+	this._score++;
+	/* FIXME update scoreboard */
 }
 
 Game.prototype.removeFence = function(fence) {
@@ -126,7 +136,12 @@ Game.prototype._up = function(e) {
 
 	if (!this._tmpFence) { return; } /* not moved at all */
 	
-	this._fences.push(this._tmpFence);
+	if (this._tmpFence.getLength() < 10) { /* too short */
+		this._engine.removeActor(this._tmpFence, "fences");
+	} else {
+		this._fences.push(this._tmpFence);
+	}
+	
 	this._tmpFence = null;
 	this._downPoint = null;
 }

@@ -5,7 +5,7 @@ Fence.prototype.init = function(pos1, pos2) {
 	this._dir = null;
 	this._normal = null;
 	this._dirty = false;
-	this._maxHP = 4;  /* FIXME configurable? */
+	this._maxHP = 3;  /* FIXME configurable? */
 	this._hp = this._maxHP;
 	
 	var colors = [
@@ -43,9 +43,21 @@ Fence.prototype.getPosition = function() {
 	return [this._pos1, this._pos2];
 }
 
+Fence.prototype.getLength = function() {
+	return Math.sqrt(this._dir[0]*this._dir[0] + this._dir[1]*this._dir[1]);
+}
+
 Fence.prototype.getColor = function() {
 	var color = [];
-	var frac = this._hp/this._maxHP;
+/*
+ 1       (N-1)            (max-1) + (N-1)          (max + N - 2)
+--- + --------------- = ---------------------- = -----------------
+ 2      2 * (max-1)           2 * (max-1)           2 * (max-1)
+*/
+	var max = this._maxHP;
+	var N = this._hp;
+	var frac = (max + N - 2)/(2*(max - 1));
+	
 	for (var i=0;i<this._color.length;i++) { color.push(Math.round(this._color[i]*frac)); }
 	return color;
 }
