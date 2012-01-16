@@ -47,7 +47,7 @@ Fence.prototype.getColor = function() {
 	var color = [];
 	var frac = this._hp/this._maxHP;
 	for (var i=0;i<this._color.length;i++) { color.push(Math.round(this._color[i]*frac)); }
-	return color.join(",");
+	return color;
 }
 
 Fence.prototype.tick = function(dt) {
@@ -72,7 +72,7 @@ Fence.prototype.draw = function(context) {
 		context.moveTo(this._pos1[0], this._pos1[1]);
 		context.lineTo(this._pos2[0], this._pos2[1]);
 		context.lineWidth = line.width;
-		context.strokeStyle = (line.color || "rgba("+this.getColor()+","+line.opacity+")");
+		context.strokeStyle = (line.color || "rgba("+this.getColor().join(",")+","+line.opacity+")");
 		context.stroke();
 	}
 	context.restore();
