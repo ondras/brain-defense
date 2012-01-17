@@ -2,6 +2,9 @@ var Map = OZ.Class().extend(HAF.Actor);
 Map.prototype.init = function() {
 	this._size = [1024, 690];
 	this._center = [Math.round(this._size[0]/2), Math.round(this._size[1]/2)];
+	this._dirty = false;
+	this._brain = OZ.DOM.elm("img", {src:"img/brain.png"});
+	OZ.Event.add(this._brain, "load", this._load.bind(this));
 }
 
 Map.prototype.getSize = function() {
@@ -20,13 +23,17 @@ Map.prototype.getWaypoint = function(position) {
 }
 
 Map.prototype.tick = function(dt) {
-	return false;
+	return this._dirty;
 }
 
 Map.prototype.draw = function(context) {
+	if (!this._dirty) { return; }
+	this._dirty = false;
+	
 	context.fillStyle = "#ccc";
 	context.fillRect(0, 0, this._size[0], this._size[1]);
 	
+	/*
 	var size = 10;
 	context.beginPath();
 	context.moveTo(this._center[0]-size, this._center[1]);
@@ -34,6 +41,16 @@ Map.prototype.draw = function(context) {
 	context.moveTo(this._center[0], this._center[1]-size);
 	context.lineTo(this._center[0], this._center[1]+size);
 	context.stroke();
+	*/
+	
+	var orig = [this._brain.width, this._brain.height];
+	var target = [32, 32];
+	
+	context.drawImage(
+		this._brain,
+		0, 0, orig[0], orig[0], 
+		this._center[0]-target[0]/2, this._center[1]-target[1]/2, target[0], target[1]
+	);
 }
 
 Map.prototype.getSpawnPoint = function() {
@@ -48,4 +65,8 @@ Map.prototype.getSpawnPoint = function() {
 	}
 	
 	return [rx, ry];
+}
+
+Map.prototype._load = function(e) {
+	this._dirty = true;
 }

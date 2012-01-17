@@ -94,9 +94,13 @@ Game.prototype._initHAF = function() {
 	this._engine.addCanvas("fences");
 	this._engine.addActor(this._map, "map");
 
-	/* debug
+	/* debug */
 	var monitor = new HAF.Monitor(this._engine, [200, 100]);
-	document.body.appendChild(monitor.getContainer());
+	monitor = monitor.getContainer();
+	monitor.style.position = "absolute";
+	monitor.style.left = "0px";
+	monitor.style.top = "0px";
+	this._dom.container.appendChild(monitor);
 	/* */
 }
 
