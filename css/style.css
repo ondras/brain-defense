@@ -21,8 +21,13 @@ body {
 	top: 0px;
 	right: 0px;
 	padding: 5px 5px 10px 25px;
-	background-image: -moz-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
 	border-radius: 0px 0px 0px 100%;
+	
+	background-image: -webkit-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+	background-image: -moz-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+	background-image: -ms-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+	background-image: -o-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+	background-image: linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
 }
 
 #game .hint {
