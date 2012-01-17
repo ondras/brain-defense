@@ -34,7 +34,7 @@ Label.prototype.init = function(text, options) {
 			
 			node.style[transitionProp] = transformValue + " 1s";
 			node.style[originProp] = "50% 100%";
-			node.style[transformProp] = "translate(-50%, -50%) rotate(" + angle + "deg) scale(0, 0)";
+			node.style[transformProp] = "translate(-50%, -50%) rotate(" + angle + "deg) scale(0.01, 0.01)";
 			css = "translate(-50%, -50%) rotate(" + angle + "deg) translate(0, -" + this._options.distance  + "px) scale(" + scale + "," + scale + ")";
 		}
 		this._items.push({
