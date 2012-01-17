@@ -1,11 +1,11 @@
 var Fence = OZ.Class().extend(HAF.Actor);
-Fence.prototype.init = function(pos1, pos2) {
+Fence.prototype.init = function(pos1, pos2, maxHP) {
 	this._pos1 = null;
 	this._pos2 = null;
 	this._dir = null;
 	this._normal = null;
 	this._dirty = false;
-	this._maxHP = 3;  /* FIXME configurable? */
+	this._maxHP = maxHP || 3;
 	this._hp = this._maxHP;
 	
 	var colors = [
@@ -56,7 +56,11 @@ Fence.prototype.getColor = function() {
 */
 	var max = this._maxHP;
 	var N = this._hp;
-	var frac = (max + N - 2)/(2*(max - 1));
+	if (max == 1) {
+		var frac = 1;
+	} else {
+		var frac = (max + N - 2)/(2*(max - 1));
+	}
 	
 	for (var i=0;i<this._color.length;i++) { color.push(Math.round(this._color[i]*frac)); }
 	return color;

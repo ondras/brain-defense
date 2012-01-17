@@ -120,5 +120,6 @@ Enemy.prototype._checkFences = function() {
 Enemy.prototype._die = function() {
 	this._alive = false;
 	this._deathTime = Date.now();
+	this.dispatch("death");
 }
 

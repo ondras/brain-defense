@@ -7,12 +7,6 @@ Game.prototype.init = function() {
 		spawn: 700
 	}
 	
-	this._dom = {
-		container: OZ.DOM.elm("div", {id:"game", position:"relative", margin:"auto"}),
-		button: OZ.DOM.elm("input", {type:"button", position:"absolute", value:"Again"}),
-		shade: OZ.DOM.elm("div", {id:"shade", position:"absolute", left:"0px", top:"0px", width:"100%", height:"100%"})
-	}
-	
 	this._enemies = [];
 	this._fences = [];
 	this._downPoint = null;
@@ -20,28 +14,13 @@ Game.prototype.init = function() {
 	this._events = [];
 	this._map = new Map();
 	this._score = 0;
-	
-	this._engine = new HAF.Engine(this._map.getSize());
-	this._engine.addCanvas("map");
-	this._engine.addCanvas("enemies");
-	this._engine.addCanvas("fences");
-	this._engine.addActor(this._map, "map");
-	
-	/* debug */
-	var monitor = new HAF.Monitor(this._engine, [200, 100]);
-//	document.body.appendChild(monitor.getContainer());
-	/* */
-	
-	this._button = OZ.DOM.elm("input", {type:"button", position:"absolute", value:"Again"});
-	OZ.Event.add(this._button, "click", function() { location.reload(); } );
-	OZ.Event.add(this._button, "touchstart", function() { location.reload(); } );
 
-	var container = this._engine.getContainer();
-	document.body.appendChild(container);
-
-	OZ.Event.add(container, "mousedown", this._down.bind(this));
-	OZ.Event.add(container, "touchstart", this._down.bind(this));
-
+	this._initDOM();
+	this._initHAF();
+	
+	OZ.Event.add(null, "death", this._death.bind(this));
+	OZ.Event.add(window, "keydown", this._keydown.bind(this));
+	
 	this._start();
 	
 //	new Hint("AAA", "BBB").show(this._engine.getContainer(), [100, 100]);
@@ -49,12 +28,11 @@ Game.prototype.init = function() {
 
 Game.prototype.gameOver = function() {
 	this._stop();
-	var modal = OZ.DOM.elm("div", {width:"100%", height:"100%", backgroundColor:"black", opacity:0.7});
-	this._engine.getContainer().appendChild(modal);
+	this._dom.shade.style.display = "";
 	
 	var label = new Label("GAME OVER");
 	OZ.Event.add(label, "done", this._gameOverDone.bind(this));
-	label.show(this._engine.getContainer());
+	label.show(this._dom.container);
 }
 
 Game.prototype.getMap = function() {
@@ -69,9 +47,6 @@ Game.prototype.removeEnemy = function(enemy) {
 	var index = this._enemies.indexOf(enemy);
 	this._enemies.splice(index, 1);
 	this._engine.removeActor(enemy, "enemies");
-
-	this._score++;
-	/* FIXME update scoreboard */
 }
 
 Game.prototype.removeFence = function(fence) {
@@ -80,12 +55,62 @@ Game.prototype.removeFence = function(fence) {
 	this._engine.removeActor(fence, "fences");
 }
 
+Game.prototype._death = function(e) {
+	this._score++;
+	this._dom.score.innerHTML = "Score: " + this._score;
+}
+
+Game.prototype._initDOM = function() {
+	this._dom = {
+		container: OZ.DOM.elm("div", {id:"game", position:"relative"}),
+		shade: OZ.DOM.elm("div", {id:"shade", position:"absolute", left:"0px", top:"0px", width:"100%", height:"100%"}),
+		score: OZ.DOM.elm("div", {id:"score", position:"absolute"}),
+		button: OZ.DOM.elm("input", {type:"button", position:"absolute", value:"Again"})
+	}
+	
+	this._dom.shade.style.display = "none";
+	this._dom.button.style.display = "none";
+	
+	var size = this._map.getSize();
+	this._dom.container.style.width = size[0]+"px";
+	this._dom.container.style.height = size[1]+"px";
+	
+	this._engine = new HAF.Engine(size);
+	
+	OZ.DOM.append(
+		[document.body, this._dom.container],
+		[this._dom.container, this._engine.getContainer(), this._dom.shade, this._dom.score, this._dom.button]
+	);
+	
+	OZ.Event.add(this._dom.button, "click", function() { location.reload(); } );
+	OZ.Event.add(this._dom.button, "touchstart", function() { location.reload(); } );
+	OZ.Event.add(this._engine.getContainer(), "mousedown", this._down.bind(this));
+	OZ.Event.add(this._engine.getContainer(), "touchstart", this._down.bind(this));
+}
+
+Game.prototype._initHAF = function() {
+	this._engine.addCanvas("map");
+	this._engine.addCanvas("enemies");
+	this._engine.addCanvas("fences");
+	this._engine.addActor(this._map, "map");
+
+	/* debug
+	var monitor = new HAF.Monitor(this._engine, [200, 100]);
+	document.body.appendChild(monitor.getContainer());
+	/* */
+}
+
 Game.prototype._gameOverDone = function() {
-	this._engine.getContainer().appendChild(this._button);
-	var left = this._engine.getContainer().offsetWidth - this._button.offsetWidth;
-	var top = this._engine.getContainer().offsetHeight - this._button.offsetHeight;
-	this._button.style.left = Math.round(left/2) + "px";
-	this._button.style.top = Math.round(top/2) + "px";
+	this._dom.button.style.display = "";
+	var left = this._dom.container.offsetWidth - this._dom.button.offsetWidth;
+	var top = this._dom.container.offsetHeight - this._dom.button.offsetHeight;
+	this._dom.button.style.left = Math.round(left/2) + "px";
+	this._dom.button.style.top = Math.round(top/2) + "px";
+}
+
+Game.prototype._keydown = function(e) {
+	if (e.keyCode != "P".charCodeAt(0)) { return; }
+	(this._engine.isRunning() ? this._engine.stop() : this._engine.start());
 }
 
 Game.prototype._start = function() {
@@ -133,6 +158,7 @@ Game.prototype._up = function(e) {
 	if (e.touches && e.touches.length > 0) { return; } /* there are touches remaining */
 
 	while (this._events.length) { OZ.Event.remove(this._events.pop()); }
+	this._downPoint = null;
 
 	if (!this._tmpFence) { return; } /* not moved at all */
 	
@@ -143,7 +169,6 @@ Game.prototype._up = function(e) {
 	}
 	
 	this._tmpFence = null;
-	this._downPoint = null;
 }
 
 Game.prototype._getPoint = function(e) {

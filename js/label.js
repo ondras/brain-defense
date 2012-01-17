@@ -15,7 +15,7 @@ Label.prototype.init = function(text, options) {
 	}
 	
 	this._items = [];
-	var scale = this._options.distance * 18 / (100 * text.length);
+	var scale = this._options.distance * 3 / (100 * text.length);
 	
 	for (var i=0;i<text.length;i++) {
 		var node = OZ.DOM.elm("span", {innerHTML:text.charAt(i)});

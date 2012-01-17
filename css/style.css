@@ -7,11 +7,24 @@ body {
 	margin:0px; 
 }
 
-#haf {
+#game {
 	overflow: hidden;
+	margin: auto;
 }
 
-#haf .hint {
+#game #shade {
+	background-color: black;
+	opacity: 0.7;
+}
+
+#game #score {
+	top: 0px;
+	right: 0px;
+	padding: 1em;
+	background-color: rgba(255, 255, 255, 0.5);
+}
+
+#game .hint {
 	padding: 0.5em;
 	cursor: pointer;
 	text-align: center;
@@ -20,20 +33,21 @@ body {
 	border: 3px solid black;
 }
 
-#haf .hint h2 {
+#game .hint h2 {
 	margin: 0px;
 }
 
-#haf .hint:hover {
+#game .hint:hover {
 	opacity: 0.5;
 }
 
-#haf span {
+#game span {
 	font-family: zombie;
+	font-size: 100px;
 	text-shadow: 0px 0px 0.25em red;
 }
 
-#haf input {
+#game input {
 	font-size: 300%;
 	padding: 0.3em 0.6em;
 	cursor: pointer;
