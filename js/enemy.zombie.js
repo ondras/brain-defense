@@ -4,7 +4,7 @@ Enemy.Zombie.image = OZ.DOM.elm("img", {src:"img/zombie.png"});
 
 Enemy.Zombie.prototype.init = function(position) {
 	var visual = {
-		image: this.constructor.image,
+		image: Enemy.Zombie.image,
 		size: [64, 64],
 		frames: 8
 	}
@@ -38,6 +38,7 @@ Enemy.Zombie.prototype._tickSprite = function(dt) {
 		if (this._animation.frame >= this._animation.frames-1) { /* dying animation finished */
 			this._animation.running = false; 
 			this._animation.frame = this._animation.frames-1;
+			this.dispatch("enemy-dead");
 		} 
 		
 		return (oldFrame != this._animation.frame);

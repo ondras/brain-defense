@@ -16,8 +16,16 @@ Enemy.prototype.init = function(position, visual) {
 	this._alive = true;
 	this._deathTime = null;
 
-	this._map = Game.game.getMap();
-	this._fences = Game.game.getFences();
+	this._map = null;
+	this._fences = [];
+}
+
+Enemy.prototype.setMap = function(map) {
+	this._map = map;
+}
+
+Enemy.prototype.setFences = function(fences) {
+	this._fences = fences;
 }
 
 Enemy.prototype.isAlive = function() {
@@ -33,7 +41,7 @@ Enemy.prototype.tick = function(dt) {
 	} else { /* dead: just animate */
 		var time = Date.now();
 		if (time - this._deathTime > 1000*10) { /* FIXME configurable? automatic? */
-			Game.game.removeEnemy(this);
+			this.dispatch("enemy-purge");
 			return false;
 		}
 		return this._tickSprite(dt);
@@ -68,7 +76,7 @@ Enemy.prototype._move = function(dt) {
 	if (!this._waypoint) {  /* first time or distance worse: ask for next waypoint */
 		this._waypoint = this._map.getWaypoint(this._position);
 		if (!this._waypoint) { /* already there! */
-			Game.game.gameOver();
+			this.dispatch("enemy-finish");
 			return false; 
 		} 
 		
@@ -120,6 +128,6 @@ Enemy.prototype._checkFences = function() {
 Enemy.prototype._die = function() {
 	this._alive = false;
 	this._deathTime = Date.now();
-	this.dispatch("death");
+	this.dispatch("enemy-death");
 }
 

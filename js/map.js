@@ -27,11 +27,11 @@ Map.prototype.tick = function(dt) {
 }
 
 Map.prototype.draw = function(context) {
-	if (!this._dirty) { return; }
-	this._dirty = false;
-	
 	context.fillStyle = "#ccc";
 	context.fillRect(0, 0, this._size[0], this._size[1]);
+
+	if (!this._dirty) { return; }
+	this._dirty = false;
 	
 	/*
 	var size = 10;
@@ -43,18 +43,16 @@ Map.prototype.draw = function(context) {
 	context.stroke();
 	*/
 	
-	var orig = [this._brain.width, this._brain.height];
 	var target = [32, 32];
 	
 	context.drawImage(
 		this._brain,
-		0, 0, orig[0], orig[0], 
+		0, 0, this._brain.width, this._brain.height, 
 		this._center[0]-target[0]/2, this._center[1]-target[1]/2, target[0], target[1]
 	);
 }
 
 Map.prototype.getSpawnPoint = function() {
-//	return [0, this._size[1]];
 	var rx = Math.round(Math.random()*this._size[0]);
 	var ry = Math.round(Math.random()*this._size[1]);
 	

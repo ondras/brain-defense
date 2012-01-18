@@ -7,8 +7,11 @@
 		<script src="js/oz.js"></script>
 		<script src="js/haf.js"></script>
 		<script src="js/game.js"></script>
+		<script src="js/game.level.js"></script>
+		<script src="js/game.level.tutorial.js"></script>
 		<script src="js/enemy.js"></script>
 		<script src="js/enemy.zombie.js"></script>
+		<script src="js/enemy.zombie.tutorial.js"></script>
 		<script src="js/fence.js"></script>
 		<script src="js/fence.particle.js"></script>
 		<script src="js/map.js"></script>
@@ -17,6 +20,6 @@
 		<link rel="stylesheet" type="text/css" href="css/style.css" />
 	</head>
 	<body>
-		<script>new Game();</script>
+		<script>new Game().play(Game.Level.Tutorial);</script>
 	</body>
 </html>

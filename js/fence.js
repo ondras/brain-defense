@@ -112,7 +112,7 @@ Fence.prototype.distanceTo = function(position) {
 
 Fence.prototype.damage = function(/* FIXME parametrized? */) {
 	this._hp--;
-	if (!this._hp) { Game.game.removeFence(this); }
+	if (!this._hp) { this.dispatch("fence-death"); }
 }
 
 Fence.prototype.removeParticle = function(particle) {

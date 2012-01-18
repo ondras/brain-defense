@@ -87,5 +87,5 @@ Label.prototype._start = function() {
 }
 
 Label.prototype._end = function() {
-	this.dispatch("done");
+	this.dispatch("label-done");
 }
