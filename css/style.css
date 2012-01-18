@@ -46,10 +46,6 @@ body {
 	margin-top: 0px;
 }
 
-#game .hint:hover {
-	opacity: 0.5;
-}
-
 #game .hint p {
 	font-size: 80%;
 	text-align: center;
