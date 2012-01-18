@@ -31,20 +31,28 @@ body {
 }
 
 #game .hint {
-	padding: 0.5em;
+	padding: 2em 1.5em 4em 1.5em;
 	cursor: pointer;
-	text-align: center;
+	text-align: justify;
 	background-color: rgba(255, 255, 255, 0.5);
 	border-radius: 50%;
 	border: 3px solid black;
+	max-width: 350px;
 }
 
 #game .hint h2 {
-	margin: 0px;
+	text-align: center;
+	font-size: 120%;
+	margin-top: 0px;
 }
 
 #game .hint:hover {
 	opacity: 0.5;
+}
+
+#game .hint p {
+	font-size: 80%;
+	text-align: center;
 }
 
 #game span {

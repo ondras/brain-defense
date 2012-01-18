@@ -58,7 +58,7 @@ Game.prototype._initDOM = function() {
 		container: OZ.DOM.elm("div", {id:"game", position:"relative"}),
 		shade: OZ.DOM.elm("div", {id:"shade", position:"absolute", left:"0px", top:"0px", width:"100%", height:"100%"}),
 		score: OZ.DOM.elm("div", {id:"score", position:"absolute"}),
-		button: OZ.DOM.elm("input", {type:"button", position:"absolute", value:"Again"})
+		button: OZ.DOM.elm("input", {type:"button", position:"absolute", value:"Again?"})
 	}
 	
 	this._dom.shade.style.display = "none";
@@ -82,7 +82,7 @@ Game.prototype._initHAF = function() {
 	this._engine.addCanvas("enemies");
 	this._engine.addCanvas("fences");
 
-	/* debug */
+	/* debug
 	var monitor = new HAF.Monitor(this._engine, [200, 100]);
 	monitor = monitor.getContainer();
 	monitor.style.position = "absolute";

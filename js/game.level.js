@@ -2,11 +2,14 @@ Game.Level = OZ.Class();
 Game.Level.prototype.init = function(game) {
 	this._conf = {
 		maxFences: 5,
-		spawn: 700
+		startSpawn: 1500,
+		endSpawn: 300
 	}
 	
+	this._currentSpawn = this._conf.startSpawn;
 	this._game = game;
 	this._engine = this._game.getEngine();
+	this._spawnInterval = null;
 
 	this._enemies = [];
 	this._fences = [];
@@ -38,11 +41,12 @@ Game.Level.prototype.addFence = function(fence) {
 }
 
 Game.Level.prototype._enableSpawn = function() {
-	this._spawnInterval = setInterval(this._spawn.bind(this), this._conf.spawn);
+	this._spawnTimeout = setTimeout(this._spawn.bind(this), this._conf.spawn);
 }
 
 Game.Level.prototype._disableSpawn = function() {
-	clearInterval(this._spawnInterval);
+	clearTimeout(this._spawnTimeout);
+	this._spawnTimeout = null;
 }
 
 Game.Level.prototype._enemyDeath = function(e) {
@@ -76,6 +80,8 @@ Game.Level.prototype._enemyFinish = function(e) {
 
 Game.Level.prototype._spawn = function() {
 	this._createEnemy(this._map.getSpawnPoint());
+	this._currentSpawn = Math.max(this._currentSpawn-5, this._conf.endSpawn);
+	if (this._spawnTimeout) { this._spawnTimeout = setTimeout(this._spawn.bind(this), this._currentSpawn); }
 }
 
 Game.Level.prototype._createEnemy = function(position) {
