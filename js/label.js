@@ -65,6 +65,15 @@ Label.prototype.show = function(container) {
 	}
 
 	setTimeout(this._end.bind(this), 1000);
+	return this;
+}
+
+Label.prototype.hide = function() {
+	while (this._items.length) {
+		var item = this._items.pop();
+		if (item.node.parentNode) { item.node.parentNode.removeChild(item.node); }
+	}
+	return this;
 }
 
 Label.prototype._start = function() {
@@ -77,3 +86,4 @@ Label.prototype._start = function() {
 Label.prototype._end = function() {
 	this.dispatch("label-done");
 }
+

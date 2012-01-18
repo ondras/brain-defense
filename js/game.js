@@ -6,9 +6,14 @@ Game.prototype.init = function() {
 	this._ecMove = [];
 	this._engine = null;
 	this._dom = {};
+	this._wasTutorial = false;
+	this._label = null;
+	this._level = null;
 
 	this._initDOM();
 	this._initHAF();
+	
+	this._showWelcome();
 }
 
 Game.prototype.setSize = function(size) {
@@ -26,17 +31,23 @@ Game.prototype.getEngine = function() {
 	return this._engine;
 }
 
-Game.prototype.play = function(level) {
+Game.prototype._start = function() {
+	this._hideBox();
+	this.setScore(0);
+	
+	if (this._wasTutorial) {
+		var level = Game.Level;
+	} else {
+		var level = Game.Level.Tutorial;
+		this._wasTutorial = true;
+	}
 	this._level = new level(this);
 	this._level.start();
 }
 
 Game.prototype.gameOver = function() {
-	this._dom.shade.style.display = "";
-	
-	var label = new Label("GAME OVER");
-	OZ.Event.add(label, "label-done", this._gameOverDone.bind(this));
-	label.show(this._dom.container);
+	this._dom.button.value = "Again?";
+	this._showBox("GAME OVER");
 }
 
 Game.prototype.enableDrawing = function() {
@@ -53,26 +64,50 @@ Game.prototype.showHint = function(hint, position) {
 	hint.show(this._dom.container, position);
 }
 
+Game.prototype._showWelcome = function() {
+	this.setSize(OZ.DOM.win());
+	this._showBox("BRAIN DEFENSE");
+}
+
+Game.prototype._showBox = function(label) {
+	this._dom.shade.style.display = "";
+	this._dom.box.style.display = "";
+	var left = (this._dom.container.offsetWidth - this._dom.box.offsetWidth)/2;
+	var top = (this._dom.container.offsetHeight - this._dom.box.offsetHeight)/2;
+	this._dom.box.style.left = Math.round(left)+"px";
+	this._dom.box.style.top = Math.round(top)+"px";
+	this._label = new Label(label).show(this._dom.container);
+}
+
+Game.prototype._hideBox = function() {
+	this._dom.shade.style.display = "none";
+	this._dom.box.style.display = "none";
+
+	this._label.hide();
+	this._label = null;
+}
+
 Game.prototype._initDOM = function() {
 	this._dom = {
 		container: OZ.DOM.elm("div", {id:"game", position:"relative"}),
 		shade: OZ.DOM.elm("div", {id:"shade", position:"absolute", left:"0px", top:"0px", width:"100%", height:"100%"}),
 		score: OZ.DOM.elm("div", {id:"score", position:"absolute"}),
-		button: OZ.DOM.elm("input", {type:"button", position:"absolute", value:"Again?"})
+		box: OZ.DOM.elm("div", {id:"box", position:"absolute"}),
+		button: OZ.DOM.elm("input", {type:"button", value:"Play"})
 	}
 	
 	this._dom.shade.style.display = "none";
-	this._dom.button.style.display = "none";
 	
 	this._engine = new HAF.Engine();
 	
 	OZ.DOM.append(
 		[document.body, this._dom.container],
-		[this._dom.container, this._engine.getContainer(), this._dom.shade, this._dom.score, this._dom.button]
+		[this._dom.container, this._engine.getContainer(), this._dom.shade, this._dom.score, this._dom.box],
+		[this._dom.box, this._dom.button, OZ.DOM.elm("p", {innerHTML:"Alpha version, &copy; 2012 <a href='http://ondras.zarovi.cz/'>Ondřej Žára</a>"})]
 	);
 	
-	OZ.Event.add(this._dom.button, "click", function() { location.reload(); } );
-	OZ.Event.add(this._dom.button, "touchstart", function() { location.reload(); } );
+	OZ.Event.add(this._dom.button, "click", this._start.bind(this));
+	OZ.Event.add(this._dom.button, "touchstart", this._start.bind(this));
 	
 	this.setScore(0);
 }
@@ -90,14 +125,6 @@ Game.prototype._initHAF = function() {
 	monitor.style.top = "0px";
 	this._dom.container.appendChild(monitor);
 	/* */
-}
-
-Game.prototype._gameOverDone = function() {
-	this._dom.button.style.display = "";
-	var left = this._dom.container.offsetWidth - this._dom.button.offsetWidth;
-	var top = this._dom.container.offsetHeight - this._dom.button.offsetHeight;
-	this._dom.button.style.left = Math.round(left/2) + "px";
-	this._dom.button.style.top = Math.round(top/2) + "px";
 }
 
 Game.prototype._down = function(e) {

@@ -75,6 +75,8 @@ Game.Level.prototype._enemyFinish = function(e) {
 	this._disableSpawn();
 	if (this._fences.length < this._conf.maxFences) { this._game.disableDrawing(); }
 	this._engine.stop();
+	this._engine.removeActors("fences");
+	this._engine.removeActors("enemies");
 	this._game.gameOver();
 }
 

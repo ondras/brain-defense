@@ -57,7 +57,16 @@ body {
 	text-shadow: 0px 0px 0.25em red;
 }
 
-#game input {
+#game #box {
+	text-align: center;
+}
+
+#game #box a {
+	color: black;
+	text-shadow: 0px 0px 0.25em red;
+}
+
+#game #box input {
 	font-size: 300%;
 	padding: 0.3em 0.6em;
 	cursor: pointer;
