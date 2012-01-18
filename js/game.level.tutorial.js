@@ -49,7 +49,7 @@ Game.Level.Tutorial.prototype._nextStep = function() {
 		break;
 		
 		case 3: /* first hint (zombie info) dismissed */
-			var hint = new Hint("Fear not!", "Fortunately, there is a solid laser-fence in the way, so let's watch what happens&hellip;");
+			var hint = new Hint("Fear not!", "Luckily for us, there is a solid laser-fence in the way, so let's watch what happens&hellip;", true);
 			this._game.showHint(hint, pos);
 			this._tutorialEvent = OZ.Event.add(hint, "hint-hide", this._event.bind(this));
 		break;
