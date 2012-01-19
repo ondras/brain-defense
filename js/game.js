@@ -76,7 +76,9 @@ Game.prototype._showBox = function(label) {
 	var top = (this._dom.container.offsetHeight - this._dom.box.offsetHeight)/2;
 	this._dom.box.style.left = Math.round(left)+"px";
 	this._dom.box.style.top = Math.round(top)+"px";
-	this._label = new Label(label).show(this._dom.container);
+	
+	var distance = Math.round(this._dom.container.offsetHeight * 0.75);
+	this._label = new Label(label, {distance:distance}).show(this._dom.container);
 }
 
 Game.prototype._hideBox = function() {
